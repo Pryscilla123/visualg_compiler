@@ -8,6 +8,7 @@
 
 
 %%
+
 "algoritmo"     {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "inicio"        {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "fimalgoritmo"  {printf("PALAVRA RESERVADA: %s\n", yytext);}
@@ -16,7 +17,7 @@
 "vetor"         {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "de"            {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "caractere"     {printf("PALAVRA RESERVADA: %s\n", yytext);}
-"logico"        {printf("PALAVRA RESERVADA: %s\n", yytext);}
+"logico"        {printf("PALAVRA RESERVADA: %s\n ", yytext);}
 "aleatorio"     {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "arquivo"       {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "asc"           {printf("PALAVRA RESERVADA: %s\n", yytext);}
@@ -67,15 +68,7 @@
 "timer"         {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "verdadeiro"    {printf("PALAVRA RESERVADA: %s\n", yytext);}
 "xou"           {printf("PALAVRA RESERVADA: %s\n", yytext);}
-
-["]([a-zA-Z])+([ ]([a-zA-Z]+))*["]     {printf("IDENTIFICADOR: %s\n", yytext);}
-
-["](((([ ])*)|((([-|+|/|*|\.]*)|[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ])+))((([ ])*)|((([-|+|/|*|\.]*)|([a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+))))*)(([ ])*)["]     {printf("LITERAL: %s\n", yytext);}
-
-[a-zA-Z]+       {printf("VARIÁVEL: %s\n", yytext);}
-
-(\-?)[0-9]+	{printf("INTEIRO: %s\n", yytext);}
-(\-)?[0-9]+(\.)[0-9]+ {printf("REAL: %s\n", yytext);}
+"dos"           {printf("PALAVRA RESERVADA: %s\n", yytext);}
 
 "+"             {printf("OPERADOR ARITMETICO: %s\n", yytext);}
 "-"             {printf("OPERADOR ARITMETICO: %s\n", yytext);}
@@ -102,6 +95,14 @@
 ")"            {printf("SIMBOLO ESPECIAL: %s\n", yytext);}
 ";"            {printf("SIMBOLO ESPECIAL: %s\n", yytext);}
 
+\".*\"    {printf("LITERAL: %s\n", yytext);}
+
+[a-zA-Z]+([0-9]*|[a-zA-Z_-]*)       {printf("IDENTIFICADOR: %s\n", yytext);}
+
+(\-?)[0-9]+	{printf("INTEIRO: %s\n", yytext);}
+(\-)?[0-9]+(\.)[0-9]+ {printf("REAL: %s\n", yytext);}
+
+
 [ ]* { /* ignore white space */ }
 
 \/.*  { /* ignore white space */ }
@@ -112,7 +113,7 @@
 
 \{.*     { /* ignore white space */ }
 
-.       { printf("Mystery character: %s\n", yytext); }
+.       { printf("Mystery character: %c\n", yytext[0]); }
 
 %%
 
