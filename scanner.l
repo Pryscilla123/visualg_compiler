@@ -95,7 +95,7 @@
 ")"            {printf("SIMBOLO ESPECIAL: %s\n", yytext);}
 ";"            {printf("SIMBOLO ESPECIAL: %s\n", yytext);}
 
-\".*\"    {printf("LITERAL: %s\n", yytext);}
+\"([^\\\"]|\\.)*\"    {printf("LITERAL: %s\n", yytext);}
 
 [a-zA-Z]+([0-9]*|[a-zA-Z_-]*)       {printf("IDENTIFICADOR: %s\n", yytext);}
 
