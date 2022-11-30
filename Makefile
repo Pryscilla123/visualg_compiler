@@ -1,13 +1,17 @@
-PROG=scanner
+run:
+	./msm_scaner.exe
 
-run: compilar
-	./${PROG}.exe
+compilar: clean comp_bison comp_flex
+	gcc scanner.yy.c scanner.tab.c -lfl -o scanner.exe
 
-compilar: clean scanner
-	gcc -o ${PROG}.exe ${PROG}.yy.c -std=c89 -lfl
+comp_bison:
+	bison -d -v scanner.y
 
-scanner:
-	flex -o ${PROG}.yy.c ${PROG}.l
-	
+comp_flex:
+	flex -o scanner.yy.c scanner.l
+
 clean:
-	rm -f *.exe *.yy.c
+	rm -f *.exe *.output *.tab.* *.yy.c
+
+zip:
+	tar -czvf ‘(date +%y-%m-%d-%H-%M-%S)‘.tar.gz Makefile *.l *.y
