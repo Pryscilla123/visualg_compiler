@@ -82,6 +82,25 @@ extern void yylex_destroy();
 
 %%
 
+procparametro: /* Nothing */
+             | '(' declaracaovariaveis ')'
+             ;
+
+proc: PROCEDIMENTO NAME procparametro conteudomain FIMPROCEDIMENTO;
+
+funcparametro: /* Nothing */
+             | '(' declaracaovariaveis ')'
+             ;
+
+func: FUNCAO NAME funcparametro ':' tipovm conteudomain FIMFUNCAO;
+
+selecaocomposta: /* Nothing */
+               | CASO listaexp conteudo selecaocomposta
+               | OUTROCASO listaexp conteudo
+               ;
+
+selecao: ESCOLHA NAME selecaocomposta FIMESCOLHA;
+
 repeticaoenquanto: ENQUANTO condicao FACA conteudo FIMENQUANTO;
 
 repeticaopara: PARA NAME DE NUMBER_INT ATE NUMBER_INT FACA conteudo FIMPARA;
@@ -93,7 +112,7 @@ dcsimplescomposto: /* Nothing */
 
 desviocondicional: SE condicao dcsimplescomposto FIMSE;
 
-condicao: NAME CMP NAME; 
+condicao: NAME CMP NAME
         | NAME CMP number
         | NAME CMP LITERAL
         | NAME CMP VERDADEIRO
@@ -119,44 +138,57 @@ exp: number
    | exp DIV exp
    ;
 
+listaexp: exp
+        | exp ',' listaexp
+        ;
+
 conteudo: /* Nothing */
         | varrecebe conteudo
         | desviocondicional conteudo
         | repeticaopara conteudo
         | repeticaoenquanto conteudo
+        | selecao conteudo
+        | NAME
+        | NAME '(' variaveis ')'
         ;
-
-blocoprograma: conteudo;
 
 conteudoblocovar: /* Nothing */
                 | declaracaovariaveis conteudoblocovar
                 | declaracaovetor conteudoblocovar
-                | declaracaomatriz conteudoblocovar
                 ;
 
-declaracaomatriz: NAME ':' VETOR '[' NUMBER_INT DP NUMBER_INT ',' NUMBER_INT DP NUMBER_INT ']' DE REAL
-                | NAME ':' VETOR '[' NUMBER_INT DP NUMBER_INT ',' NUMBER_INT DP NUMBER_INT ']' DE INTEIRO
-                ;
+tipovm: REAL
+      | INTEIRO
+      | LOGICO
+      | CARACTERE
+      | VETOR
+      ;
 
-declaracaovetor: NAME ':' VETOR '[' NUMBER_INT DP NUMBER_INT ']' DE REAL
-               | NAME ':' VETOR '[' NUMBER_INT DP NUMBER_INT ']' DE INTEIRO
-               ;
+declaracaomv: NUMBER_INT DP NUMBER_INT
+            | NUMBER_INT DP NUMBER_INT ',' declaracaomv
+            ;
 
-declaracaovariaveis: variaveis ':' REAL
-                   | variaveis ':' INTEIRO
-                   | variaveis ':' LOGICO
-                   | variaveis ':' CARACTERE
-                   ;
+declaracaovetor: declaracaovariaveis '[' declaracaomv ']' DE tipovm;
+
+
+declaracaovariaveis: variaveis ':' tipovm;
 
 variaveis: NAME
           | NAME ',' variaveis
           ;
 
+
+blocofuncproc: /* Nothing */
+             | func blocofuncproc
+             | proc blocofuncproc
+             ;
+
+
 blocovar: VAR conteudoblocovar { printf("bloco var reconhecido\n"); };
 
-conteudo: blocovar INICIO blocoprograma { printf("conteudo reconhecido\n");} ;
+conteudomain: blocovar blocofuncproc INICIO conteudo { printf("conteudo reconhecido\n");} ;
 
-algoritmo: ALGORITMO LITERAL conteudo FIMALGORITMO { printf("Programa reconhecido\n"); };
+algoritmo: ALGORITMO LITERAL conteudomain FIMALGORITMO { printf("Programa reconhecido\n"); };
 
 %%
 
